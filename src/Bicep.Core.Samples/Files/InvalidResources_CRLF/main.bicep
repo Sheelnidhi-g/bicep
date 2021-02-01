@@ -569,3 +569,47 @@ resource invalidExtensionResourceDuplicateName2 'Mock.Rp/mockExtResource@2019-01
 resource invalidDecorator 'Microsoft.Foo/foos@2020-02-02-alpha'= {
   name: 'invalidDecorator'
 }
+
+// loop parsing cases
+resource expectedForKeyword 'Microsoft.Storage/storageAccounts@2019-06-01' = []
+
+resource expectedForKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [f]
+
+resource expectedLoopVar 'Microsoft.Storage/storageAccounts@2019-06-01' = [for]
+
+resource expectedInKeyword 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x]
+
+resource expectedInKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x b]
+
+resource expectedArrayExpression 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in]
+
+resource expectedColon 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y]
+
+resource expectedLoopBody 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:]
+
+// loop semantic analysis cases
+resource wrongLoopBodyType 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:4]
+
+resource missingLoopBodyProperties 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:{
+
+}]
+
+// valid loop - this should be moved to Resources_* test case after E2E works
+var storageAccounts = [
+  {
+    name: 'one'
+    location: 'eastus2'
+  }
+  {
+    name: 'two'
+    location: 'westus'
+  }
+]
+resource storageResources 'Microsoft.Storage/storageAccounts@2019-06-01' = [for account in storageAccounts: {
+  name: account.name
+  location: account.location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+}]

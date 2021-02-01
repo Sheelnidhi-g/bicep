@@ -680,10 +680,10 @@ namespace Bicep.Core.Diagnostics
                 "An empty indexer is not allowed. Specify a valid expression."
             );
 
-            public ErrorDiagnostic ExpectBodyStartOrIf() => new(
+            public ErrorDiagnostic ExpectBodyStartOrIfOrLoopStart() => new(
                 TextSpan,
                 "BCP118",
-                "Expected the \"{\" character or the \"if\" keyword at this location.");
+                "Expected the \"{\" character, the \"[\" character, or the \"if\" keyword at this location.");
 
             public Diagnostic InvalidExtensionResourceScope() => new(
                 TextSpan,
@@ -766,6 +766,16 @@ namespace Bicep.Core.Diagnostics
                 TextSpan,
                 "BCP133",
                 "The unicode escape sequence is not valid. Valid unicode escape sequences range from \\u{0} to \\u{10FFFF}.");
+
+            public ErrorDiagnostic ExpectedLoopVariableIdentifier() => new(
+                TextSpan,
+                "BCP134",
+                "Expected a loop variable identifier at this location.");
+
+            public ErrorDiagnostic LoopArrayExpressionTypeMismatch(TypeSymbol actualType) => new(
+                TextSpan,
+                "BCP135",
+                $"Loop expected an expression of type \"{LanguageConstants.Array}\" but the provided value is of type \"{actualType}\".");
         }
 
         public static DiagnosticBuilderInternal ForPosition(TextSpan span)

@@ -281,3 +281,47 @@ module childCompletionD 'ChildModules/e'
 module moduleWithNotAttachableDecorators './empty.bicep' = {
   name: 'moduleWithNotAttachableDecorators'
 }
+
+// loop parsing cases
+module expectedForKeyword 'modulea.bicep' = []
+
+module expectedForKeyword2 'modulea.bicep' = [f]
+
+module expectedLoopVar 'modulea.bicep' = [for]
+
+module expectedInKeyword 'modulea.bicep' = [for x]
+
+module expectedInKeyword2 'modulea.bicep' = [for x b]
+
+module expectedArrayExpression 'modulea.bicep' = [for x in]
+
+module expectedColon 'modulea.bicep' = [for x in y]
+
+module expectedLoopBody 'modulea.bicep' = [for x in y:]
+
+// loop semantic analysis cases
+module wrongLoopBodyType 'modulea.bicep' = [for x in y:4]
+
+module missingLoopBodyProperties 'modulea.bicep' = [for x in y:{
+
+}]
+
+// valid loop - this should be moved to Modules_* test case after E2E works
+var myModules = [
+  {
+    name: 'one'
+    location: 'eastus2'
+  }
+  {
+    name: 'two'
+    location: 'westus'
+  }
+]
+module storageResources 'modulea.bicep' = [for module in myModules: {
+  name: module.name
+  params: {
+    arrayParam: []
+    objParam: module
+    stringParamB: module.location
+  }
+}]

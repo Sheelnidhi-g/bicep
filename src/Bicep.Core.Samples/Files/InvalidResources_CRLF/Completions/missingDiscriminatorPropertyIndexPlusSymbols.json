@@ -606,6 +606,118 @@
     }
   },
   {
+    "label": "expectedArrayExpression",
+    "kind": "interface",
+    "detail": "expectedArrayExpression",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_expectedArrayExpression",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "expectedArrayExpression"
+    }
+  },
+  {
+    "label": "expectedColon",
+    "kind": "interface",
+    "detail": "expectedColon",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_expectedColon",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "expectedColon"
+    }
+  },
+  {
+    "label": "expectedForKeyword",
+    "kind": "interface",
+    "detail": "expectedForKeyword",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_expectedForKeyword",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "expectedForKeyword"
+    }
+  },
+  {
+    "label": "expectedForKeyword2",
+    "kind": "interface",
+    "detail": "expectedForKeyword2",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_expectedForKeyword2",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "expectedForKeyword2"
+    }
+  },
+  {
+    "label": "expectedInKeyword",
+    "kind": "interface",
+    "detail": "expectedInKeyword",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_expectedInKeyword",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "expectedInKeyword"
+    }
+  },
+  {
+    "label": "expectedInKeyword2",
+    "kind": "interface",
+    "detail": "expectedInKeyword2",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_expectedInKeyword2",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "expectedInKeyword2"
+    }
+  },
+  {
+    "label": "expectedLoopBody",
+    "kind": "interface",
+    "detail": "expectedLoopBody",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_expectedLoopBody",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "expectedLoopBody"
+    }
+  },
+  {
+    "label": "expectedLoopVar",
+    "kind": "interface",
+    "detail": "expectedLoopVar",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_expectedLoopVar",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "expectedLoopVar"
+    }
+  },
+  {
     "label": "extensionResourceId",
     "kind": "function",
     "detail": "extensionResourceId()",
@@ -1093,6 +1205,20 @@
     },
     "command": {
       "command": "editor.action.triggerParameterHints"
+    }
+  },
+  {
+    "label": "missingLoopBodyProperties",
+    "kind": "interface",
+    "detail": "missingLoopBodyProperties",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_missingLoopBodyProperties",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "missingLoopBodyProperties"
     }
   },
   {
@@ -2025,6 +2151,34 @@
     }
   },
   {
+    "label": "storageAccounts",
+    "kind": "variable",
+    "detail": "storageAccounts",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_storageAccounts",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "storageAccounts"
+    }
+  },
+  {
+    "label": "storageResources",
+    "kind": "interface",
+    "detail": "storageResources",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_storageResources",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "storageResources"
+    }
+  },
+  {
     "label": "string",
     "kind": "function",
     "detail": "string()",
@@ -2344,6 +2498,20 @@
     "textEdit": {
       "range": {},
       "newText": "validResourceForInvalidExtensionResourceDuplicateName"
+    }
+  },
+  {
+    "label": "wrongLoopBodyType",
+    "kind": "interface",
+    "detail": "wrongLoopBodyType",
+    "deprecated": false,
+    "preselect": false,
+    "sortText": "2_wrongLoopBodyType",
+    "insertTextFormat": "plainText",
+    "insertTextMode": "asIs",
+    "textEdit": {
+      "range": {},
+      "newText": "wrongLoopBodyType"
     }
   }
 ]

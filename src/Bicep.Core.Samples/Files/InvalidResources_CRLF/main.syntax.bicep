@@ -3943,6 +3943,360 @@ resource invalidDecorator 'Microsoft.Foo/foos@2020-02-02-alpha'= {
 //@[26:28)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
-//@[1:3) NewLine |\r\n|
+//@[1:5) NewLine |\r\n\r\n|
 
-//@[0:0) EndOfFile ||
+// loop parsing cases
+//@[21:23) NewLine |\r\n|
+resource expectedForKeyword 'Microsoft.Storage/storageAccounts@2019-06-01' = []
+//@[0:79) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:27)  IdentifierSyntax
+//@[9:27)   Identifier |expectedForKeyword|
+//@[28:74)  StringSyntax
+//@[28:74)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[75:76)  Assignment |=|
+//@[77:79)  SkippedTriviaSyntax
+//@[77:78)   LeftSquare |[|
+//@[78:79)   RightSquare |]|
+//@[79:83) NewLine |\r\n\r\n|
+
+resource expectedForKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [f]
+//@[0:81) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:28)  IdentifierSyntax
+//@[9:28)   Identifier |expectedForKeyword2|
+//@[29:75)  StringSyntax
+//@[29:75)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[76:77)  Assignment |=|
+//@[78:81)  SkippedTriviaSyntax
+//@[78:79)   LeftSquare |[|
+//@[79:80)   Identifier |f|
+//@[80:81)   RightSquare |]|
+//@[81:85) NewLine |\r\n\r\n|
+
+resource expectedLoopVar 'Microsoft.Storage/storageAccounts@2019-06-01' = [for]
+//@[0:79) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:24)  IdentifierSyntax
+//@[9:24)   Identifier |expectedLoopVar|
+//@[25:71)  StringSyntax
+//@[25:71)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[72:73)  Assignment |=|
+//@[74:79)  ForSyntax
+//@[74:75)   LeftSquare |[|
+//@[75:78)   Identifier |for|
+//@[78:78)   LocalVariableSyntax
+//@[78:78)    IdentifierSyntax
+//@[78:78)     SkippedTriviaSyntax
+//@[78:78)   SkippedTriviaSyntax
+//@[78:78)   SkippedTriviaSyntax
+//@[78:78)   SkippedTriviaSyntax
+//@[78:78)   SkippedTriviaSyntax
+//@[78:79)   RightSquare |]|
+//@[79:83) NewLine |\r\n\r\n|
+
+resource expectedInKeyword 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x]
+//@[0:83) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:26)  IdentifierSyntax
+//@[9:26)   Identifier |expectedInKeyword|
+//@[27:73)  StringSyntax
+//@[27:73)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[74:75)  Assignment |=|
+//@[76:83)  ForSyntax
+//@[76:77)   LeftSquare |[|
+//@[77:80)   Identifier |for|
+//@[81:82)   LocalVariableSyntax
+//@[81:82)    IdentifierSyntax
+//@[81:82)     Identifier |x|
+//@[82:82)   SkippedTriviaSyntax
+//@[82:82)   SkippedTriviaSyntax
+//@[82:82)   SkippedTriviaSyntax
+//@[82:82)   SkippedTriviaSyntax
+//@[82:83)   RightSquare |]|
+//@[83:87) NewLine |\r\n\r\n|
+
+resource expectedInKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x b]
+//@[0:86) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:27)  IdentifierSyntax
+//@[9:27)   Identifier |expectedInKeyword2|
+//@[28:74)  StringSyntax
+//@[28:74)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[75:76)  Assignment |=|
+//@[77:86)  ForSyntax
+//@[77:78)   LeftSquare |[|
+//@[78:81)   Identifier |for|
+//@[82:83)   LocalVariableSyntax
+//@[82:83)    IdentifierSyntax
+//@[82:83)     Identifier |x|
+//@[84:85)   SkippedTriviaSyntax
+//@[84:85)    Identifier |b|
+//@[85:85)   SkippedTriviaSyntax
+//@[85:85)   SkippedTriviaSyntax
+//@[85:85)   SkippedTriviaSyntax
+//@[85:86)   RightSquare |]|
+//@[86:90) NewLine |\r\n\r\n|
+
+resource expectedArrayExpression 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in]
+//@[0:92) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:32)  IdentifierSyntax
+//@[9:32)   Identifier |expectedArrayExpression|
+//@[33:79)  StringSyntax
+//@[33:79)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[80:81)  Assignment |=|
+//@[82:92)  ForSyntax
+//@[82:83)   LeftSquare |[|
+//@[83:86)   Identifier |for|
+//@[87:88)   LocalVariableSyntax
+//@[87:88)    IdentifierSyntax
+//@[87:88)     Identifier |x|
+//@[89:91)   Identifier |in|
+//@[91:91)   SkippedTriviaSyntax
+//@[91:91)   SkippedTriviaSyntax
+//@[91:91)   SkippedTriviaSyntax
+//@[91:92)   RightSquare |]|
+//@[92:96) NewLine |\r\n\r\n|
+
+resource expectedColon 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y]
+//@[0:84) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:22)  IdentifierSyntax
+//@[9:22)   Identifier |expectedColon|
+//@[23:69)  StringSyntax
+//@[23:69)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[70:71)  Assignment |=|
+//@[72:84)  ForSyntax
+//@[72:73)   LeftSquare |[|
+//@[73:76)   Identifier |for|
+//@[77:78)   LocalVariableSyntax
+//@[77:78)    IdentifierSyntax
+//@[77:78)     Identifier |x|
+//@[79:81)   Identifier |in|
+//@[82:83)   VariableAccessSyntax
+//@[82:83)    IdentifierSyntax
+//@[82:83)     Identifier |y|
+//@[83:83)   SkippedTriviaSyntax
+//@[83:83)   SkippedTriviaSyntax
+//@[83:84)   RightSquare |]|
+//@[84:88) NewLine |\r\n\r\n|
+
+resource expectedLoopBody 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:]
+//@[0:88) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:25)  IdentifierSyntax
+//@[9:25)   Identifier |expectedLoopBody|
+//@[26:72)  StringSyntax
+//@[26:72)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[73:74)  Assignment |=|
+//@[75:88)  ForSyntax
+//@[75:76)   LeftSquare |[|
+//@[76:79)   Identifier |for|
+//@[80:81)   LocalVariableSyntax
+//@[80:81)    IdentifierSyntax
+//@[80:81)     Identifier |x|
+//@[82:84)   Identifier |in|
+//@[85:86)   VariableAccessSyntax
+//@[85:86)    IdentifierSyntax
+//@[85:86)     Identifier |y|
+//@[86:87)   Colon |:|
+//@[87:87)   SkippedTriviaSyntax
+//@[87:88)   RightSquare |]|
+//@[88:92) NewLine |\r\n\r\n|
+
+// loop semantic analysis cases
+//@[31:33) NewLine |\r\n|
+resource wrongLoopBodyType 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:4]
+//@[0:90) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:26)  IdentifierSyntax
+//@[9:26)   Identifier |wrongLoopBodyType|
+//@[27:73)  StringSyntax
+//@[27:73)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[74:75)  Assignment |=|
+//@[76:90)  ForSyntax
+//@[76:77)   LeftSquare |[|
+//@[77:80)   Identifier |for|
+//@[81:82)   LocalVariableSyntax
+//@[81:82)    IdentifierSyntax
+//@[81:82)     Identifier |x|
+//@[83:85)   Identifier |in|
+//@[86:87)   VariableAccessSyntax
+//@[86:87)    IdentifierSyntax
+//@[86:87)     Identifier |y|
+//@[87:88)   Colon |:|
+//@[88:89)   IntegerLiteralSyntax
+//@[88:89)    Integer |4|
+//@[89:90)   RightSquare |]|
+//@[90:94) NewLine |\r\n\r\n|
+
+resource missingLoopBodyProperties 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:{
+//@[0:103) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:34)  IdentifierSyntax
+//@[9:34)   Identifier |missingLoopBodyProperties|
+//@[35:81)  StringSyntax
+//@[35:81)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[82:83)  Assignment |=|
+//@[84:103)  ForSyntax
+//@[84:85)   LeftSquare |[|
+//@[85:88)   Identifier |for|
+//@[89:90)   LocalVariableSyntax
+//@[89:90)    IdentifierSyntax
+//@[89:90)     Identifier |x|
+//@[91:93)   Identifier |in|
+//@[94:95)   VariableAccessSyntax
+//@[94:95)    IdentifierSyntax
+//@[94:95)     Identifier |y|
+//@[95:96)   Colon |:|
+//@[96:102)   ObjectSyntax
+//@[96:97)    LeftBrace |{|
+//@[97:101)    NewLine |\r\n\r\n|
+
+}]
+//@[0:1)    RightBrace |}|
+//@[1:2)   RightSquare |]|
+//@[2:6) NewLine |\r\n\r\n|
+
+// valid loop - this should be moved to Resources_* test case after E2E works
+//@[77:79) NewLine |\r\n|
+var storageAccounts = [
+//@[0:129) VariableDeclarationSyntax
+//@[0:3)  Identifier |var|
+//@[4:19)  IdentifierSyntax
+//@[4:19)   Identifier |storageAccounts|
+//@[20:21)  Assignment |=|
+//@[22:129)  ArraySyntax
+//@[22:23)   LeftSquare |[|
+//@[23:25)   NewLine |\r\n|
+  {
+//@[2:50)   ArrayItemSyntax
+//@[2:50)    ObjectSyntax
+//@[2:3)     LeftBrace |{|
+//@[3:5)     NewLine |\r\n|
+    name: 'one'
+//@[4:15)     ObjectPropertySyntax
+//@[4:8)      IdentifierSyntax
+//@[4:8)       Identifier |name|
+//@[8:9)      Colon |:|
+//@[10:15)      StringSyntax
+//@[10:15)       StringComplete |'one'|
+//@[15:17)     NewLine |\r\n|
+    location: 'eastus2'
+//@[4:23)     ObjectPropertySyntax
+//@[4:12)      IdentifierSyntax
+//@[4:12)       Identifier |location|
+//@[12:13)      Colon |:|
+//@[14:23)      StringSyntax
+//@[14:23)       StringComplete |'eastus2'|
+//@[23:25)     NewLine |\r\n|
+  }
+//@[2:3)     RightBrace |}|
+//@[3:5)   NewLine |\r\n|
+  {
+//@[2:49)   ArrayItemSyntax
+//@[2:49)    ObjectSyntax
+//@[2:3)     LeftBrace |{|
+//@[3:5)     NewLine |\r\n|
+    name: 'two'
+//@[4:15)     ObjectPropertySyntax
+//@[4:8)      IdentifierSyntax
+//@[4:8)       Identifier |name|
+//@[8:9)      Colon |:|
+//@[10:15)      StringSyntax
+//@[10:15)       StringComplete |'two'|
+//@[15:17)     NewLine |\r\n|
+    location: 'westus'
+//@[4:22)     ObjectPropertySyntax
+//@[4:12)      IdentifierSyntax
+//@[4:12)       Identifier |location|
+//@[12:13)      Colon |:|
+//@[14:22)      StringSyntax
+//@[14:22)       StringComplete |'westus'|
+//@[22:24)     NewLine |\r\n|
+  }
+//@[2:3)     RightBrace |}|
+//@[3:5)   NewLine |\r\n|
+]
+//@[0:1)   RightSquare |]|
+//@[1:3) NewLine |\r\n|
+resource storageResources 'Microsoft.Storage/storageAccounts@2019-06-01' = [for account in storageAccounts: {
+//@[0:227) ResourceDeclarationSyntax
+//@[0:8)  Identifier |resource|
+//@[9:25)  IdentifierSyntax
+//@[9:25)   Identifier |storageResources|
+//@[26:72)  StringSyntax
+//@[26:72)   StringComplete |'Microsoft.Storage/storageAccounts@2019-06-01'|
+//@[73:74)  Assignment |=|
+//@[75:227)  ForSyntax
+//@[75:76)   LeftSquare |[|
+//@[76:79)   Identifier |for|
+//@[80:87)   LocalVariableSyntax
+//@[80:87)    IdentifierSyntax
+//@[80:87)     Identifier |account|
+//@[88:90)   Identifier |in|
+//@[91:106)   VariableAccessSyntax
+//@[91:106)    IdentifierSyntax
+//@[91:106)     Identifier |storageAccounts|
+//@[106:107)   Colon |:|
+//@[108:226)   ObjectSyntax
+//@[108:109)    LeftBrace |{|
+//@[109:111)    NewLine |\r\n|
+  name: account.name
+//@[2:20)    ObjectPropertySyntax
+//@[2:6)     IdentifierSyntax
+//@[2:6)      Identifier |name|
+//@[6:7)     Colon |:|
+//@[8:20)     PropertyAccessSyntax
+//@[8:15)      VariableAccessSyntax
+//@[8:15)       IdentifierSyntax
+//@[8:15)        Identifier |account|
+//@[15:16)      Dot |.|
+//@[16:20)      IdentifierSyntax
+//@[16:20)       Identifier |name|
+//@[20:22)    NewLine |\r\n|
+  location: account.location
+//@[2:28)    ObjectPropertySyntax
+//@[2:10)     IdentifierSyntax
+//@[2:10)      Identifier |location|
+//@[10:11)     Colon |:|
+//@[12:28)     PropertyAccessSyntax
+//@[12:19)      VariableAccessSyntax
+//@[12:19)       IdentifierSyntax
+//@[12:19)        Identifier |account|
+//@[19:20)      Dot |.|
+//@[20:28)      IdentifierSyntax
+//@[20:28)       Identifier |location|
+//@[28:30)    NewLine |\r\n|
+  sku: {
+//@[2:39)    ObjectPropertySyntax
+//@[2:5)     IdentifierSyntax
+//@[2:5)      Identifier |sku|
+//@[5:6)     Colon |:|
+//@[7:39)     ObjectSyntax
+//@[7:8)      LeftBrace |{|
+//@[8:10)      NewLine |\r\n|
+    name: 'Standard_LRS'
+//@[4:24)      ObjectPropertySyntax
+//@[4:8)       IdentifierSyntax
+//@[4:8)        Identifier |name|
+//@[8:9)       Colon |:|
+//@[10:24)       StringSyntax
+//@[10:24)        StringComplete |'Standard_LRS'|
+//@[24:26)      NewLine |\r\n|
+  }
+//@[2:3)      RightBrace |}|
+//@[3:5)    NewLine |\r\n|
+  kind: 'StorageV2'
+//@[2:19)    ObjectPropertySyntax
+//@[2:6)     IdentifierSyntax
+//@[2:6)      Identifier |kind|
+//@[6:7)     Colon |:|
+//@[8:19)     StringSyntax
+//@[8:19)      StringComplete |'StorageV2'|
+//@[19:21)    NewLine |\r\n|
+}]
+//@[0:1)    RightBrace |}|
+//@[1:2)   RightSquare |]|
+//@[2:2) EndOfFile ||

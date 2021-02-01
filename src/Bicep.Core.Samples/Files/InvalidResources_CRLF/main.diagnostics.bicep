@@ -29,7 +29,7 @@ resource trailingSpace
 resource foo 'ddd'= 
 //@[9:12) [BCP028 (Error)] Identifier "foo" is declared multiple times. Remove or rename the duplicates. |foo|
 //@[13:18) [BCP029 (Error)] The resource type is not valid. Specify a valid resource type of format "<provider>/<types>@<apiVersion>". |'ddd'|
-//@[20:20) [BCP118 (Error)] Expected the "{" character or the "if" keyword at this location. ||
+//@[20:20) [BCP118 (Error)] Expected the "{" character, the "[" character, or the "if" keyword at this location. ||
 
 // wrong resource type
 resource foo 'ddd'={
@@ -749,3 +749,64 @@ resource invalidDecorator 'Microsoft.Foo/foos@2020-02-02-alpha'= {
   name: 'invalidDecorator'
 }
 
+// loop parsing cases
+resource expectedForKeyword 'Microsoft.Storage/storageAccounts@2019-06-01' = []
+//@[78:79) [BCP012 (Error)] Expected the "for" keyword at this location. |]|
+
+resource expectedForKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [f]
+//@[79:80) [BCP012 (Error)] Expected the "for" keyword at this location. |f|
+
+resource expectedLoopVar 'Microsoft.Storage/storageAccounts@2019-06-01' = [for]
+//@[74:79) [BCP043 (Error)] This is not a valid expression. |[for]|
+//@[78:79) [BCP133 (Error)] Expected a loop variable identifier at this location. |]|
+
+resource expectedInKeyword 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x]
+//@[76:83) [BCP043 (Error)] This is not a valid expression. |[for x]|
+//@[82:83) [BCP012 (Error)] Expected the "in" keyword at this location. |]|
+
+resource expectedInKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x b]
+//@[77:86) [BCP043 (Error)] This is not a valid expression. |[for x b]|
+//@[84:85) [BCP012 (Error)] Expected the "in" keyword at this location. |b|
+//@[85:86) [BCP009 (Error)] Expected a literal value, an array, an object, a parenthesized expression, or a function call at this location. |]|
+
+resource expectedArrayExpression 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in]
+//@[82:92) [BCP043 (Error)] This is not a valid expression. |[for x in]|
+//@[91:92) [BCP009 (Error)] Expected a literal value, an array, an object, a parenthesized expression, or a function call at this location. |]|
+
+resource expectedColon 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y]
+//@[72:84) [BCP043 (Error)] This is not a valid expression. |[for x in y]|
+//@[83:84) [BCP018 (Error)] Expected the ":" character at this location. |]|
+
+resource expectedLoopBody 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:]
+//@[75:88) [BCP043 (Error)] This is not a valid expression. |[for x in y:]|
+//@[87:88) [BCP009 (Error)] Expected a literal value, an array, an object, a parenthesized expression, or a function call at this location. |]|
+
+// loop semantic analysis cases
+resource wrongLoopBodyType 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:4]
+//@[76:90) [BCP043 (Error)] This is not a valid expression. |[for x in y:4]|
+
+resource missingLoopBodyProperties 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:{
+//@[84:103) [BCP043 (Error)] This is not a valid expression. |[for x in y:{\r\n\r\n}]|
+
+}]
+
+// valid loop - this should be moved to Resources_* test case after E2E works
+var storageAccounts = [
+  {
+    name: 'one'
+    location: 'eastus2'
+  }
+  {
+    name: 'two'
+    location: 'westus'
+  }
+]
+resource storageResources 'Microsoft.Storage/storageAccounts@2019-06-01' = [for account in storageAccounts: {
+//@[75:227) [BCP043 (Error)] This is not a valid expression. |[for account in storageAccounts: {\r\n  name: account.name\r\n  location: account.location\r\n  sku: {\r\n    name: 'Standard_LRS'\r\n  }\r\n  kind: 'StorageV2'\r\n}]|
+  name: account.name
+  location: account.location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+}]

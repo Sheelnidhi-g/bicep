@@ -352,3 +352,58 @@ module moduleWithNotAttachableDecorators './empty.bicep' = {
   name: 'moduleWithNotAttachableDecorators'
 }
 
+// loop parsing cases
+module expectedForKeyword 'modulea.bicep' = []
+//@[7:25) Module expectedForKeyword. Type: module. Declaration start char: 0, length: 46
+
+module expectedForKeyword2 'modulea.bicep' = [f]
+//@[7:26) Module expectedForKeyword2. Type: module. Declaration start char: 0, length: 48
+
+module expectedLoopVar 'modulea.bicep' = [for]
+//@[7:22) Module expectedLoopVar. Type: module. Declaration start char: 0, length: 46
+
+module expectedInKeyword 'modulea.bicep' = [for x]
+//@[7:24) Module expectedInKeyword. Type: module. Declaration start char: 0, length: 50
+
+module expectedInKeyword2 'modulea.bicep' = [for x b]
+//@[7:25) Module expectedInKeyword2. Type: module. Declaration start char: 0, length: 53
+
+module expectedArrayExpression 'modulea.bicep' = [for x in]
+//@[7:30) Module expectedArrayExpression. Type: module. Declaration start char: 0, length: 59
+
+module expectedColon 'modulea.bicep' = [for x in y]
+//@[7:20) Module expectedColon. Type: module. Declaration start char: 0, length: 51
+
+module expectedLoopBody 'modulea.bicep' = [for x in y:]
+//@[7:23) Module expectedLoopBody. Type: module. Declaration start char: 0, length: 55
+
+// loop semantic analysis cases
+module wrongLoopBodyType 'modulea.bicep' = [for x in y:4]
+//@[7:24) Module wrongLoopBodyType. Type: module. Declaration start char: 0, length: 57
+
+module missingLoopBodyProperties 'modulea.bicep' = [for x in y:{
+//@[7:32) Module missingLoopBodyProperties. Type: module. Declaration start char: 0, length: 68
+
+}]
+
+// valid loop - this should be moved to Modules_* test case after E2E works
+var myModules = [
+//@[4:13) Variable myModules. Type: array. Declaration start char: 0, length: 114
+  {
+    name: 'one'
+    location: 'eastus2'
+  }
+  {
+    name: 'two'
+    location: 'westus'
+  }
+]
+module storageResources 'modulea.bicep' = [for module in myModules: {
+//@[7:23) Module storageResources. Type: module. Declaration start char: 0, length: 182
+  name: module.name
+  params: {
+    arrayParam: []
+    objParam: module
+    stringParamB: module.location
+  }
+}]

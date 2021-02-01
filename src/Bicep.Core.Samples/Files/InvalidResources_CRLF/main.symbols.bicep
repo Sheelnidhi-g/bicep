@@ -694,3 +694,58 @@ resource invalidDecorator 'Microsoft.Foo/foos@2020-02-02-alpha'= {
   name: 'invalidDecorator'
 }
 
+// loop parsing cases
+resource expectedForKeyword 'Microsoft.Storage/storageAccounts@2019-06-01' = []
+//@[9:27) Resource expectedForKeyword. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 79
+
+resource expectedForKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [f]
+//@[9:28) Resource expectedForKeyword2. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 81
+
+resource expectedLoopVar 'Microsoft.Storage/storageAccounts@2019-06-01' = [for]
+//@[9:24) Resource expectedLoopVar. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 79
+
+resource expectedInKeyword 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x]
+//@[9:26) Resource expectedInKeyword. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 83
+
+resource expectedInKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x b]
+//@[9:27) Resource expectedInKeyword2. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 86
+
+resource expectedArrayExpression 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in]
+//@[9:32) Resource expectedArrayExpression. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 92
+
+resource expectedColon 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y]
+//@[9:22) Resource expectedColon. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 84
+
+resource expectedLoopBody 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:]
+//@[9:25) Resource expectedLoopBody. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 88
+
+// loop semantic analysis cases
+resource wrongLoopBodyType 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:4]
+//@[9:26) Resource wrongLoopBodyType. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 90
+
+resource missingLoopBodyProperties 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:{
+//@[9:34) Resource missingLoopBodyProperties. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 103
+
+}]
+
+// valid loop - this should be moved to Resources_* test case after E2E works
+var storageAccounts = [
+//@[4:19) Variable storageAccounts. Type: array. Declaration start char: 0, length: 129
+  {
+    name: 'one'
+    location: 'eastus2'
+  }
+  {
+    name: 'two'
+    location: 'westus'
+  }
+]
+resource storageResources 'Microsoft.Storage/storageAccounts@2019-06-01' = [for account in storageAccounts: {
+//@[9:25) Resource storageResources. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 227
+  name: account.name
+  location: account.location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+}]

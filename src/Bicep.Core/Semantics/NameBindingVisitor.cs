@@ -1,8 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using Bicep.Core.Diagnostics;
 using Bicep.Core.Extensions;
@@ -21,11 +23,19 @@ namespace Bicep.Core.Semantics
 
         private readonly ImmutableDictionary<string, NamespaceSymbol> namespaces;
 
-        public NameBindingVisitor(IReadOnlyDictionary<string, DeclaredSymbol> declarations, IDictionary<SyntaxBase, Symbol> bindings, ImmutableDictionary<string, NamespaceSymbol> namespaces)
+        private readonly IReadOnlyDictionary<SyntaxBase, LocalScope> localScopes;
+
+        // list of active local scopes - we're using it like a stack but with the ability
+        // to peek at all the items that have been pushed already
+        private readonly IList<LocalScope> activeScopes;
+
+        public NameBindingVisitor(IReadOnlyDictionary<string, DeclaredSymbol> declarations, IDictionary<SyntaxBase, Symbol> bindings, ImmutableDictionary<string, NamespaceSymbol> namespaces, IReadOnlyDictionary<SyntaxBase, LocalScope> localScopes)
         {
             this.declarations = declarations;
             this.bindings = bindings;
             this.namespaces = namespaces;
+            this.localScopes = localScopes;
+            this.activeScopes = new List<LocalScope>();
         }
 
         public override void VisitProgramSyntax(ProgramSyntax syntax)
@@ -179,7 +189,67 @@ namespace Bicep.Core.Semantics
             }
         }
 
-        private Symbol LookupSymbolByName(IdentifierSyntax identifierSyntax, bool isFunctionCall)
+        public override void VisitForSyntax(ForSyntax syntax)
+        {
+            if (!this.localScopes.TryGetValue(syntax, out var localScope))
+            {
+                // code defect in the declaration visitor
+                throw new InvalidOperationException($"Local scope is missing for {syntax.GetType().Name} at {syntax.Span}");
+            }
+
+            // push it to the stack of active scopes
+            // as a result this scope will be used to resolve symbols first
+            // (then all the previous one and then finally the global scope)
+            this.activeScopes.Add(localScope);
+
+            // visit all the children
+            base.VisitForSyntax(syntax);
+
+            // we are leaving the loop scope
+            // pop the scope - no symbols will be resolved against it ever again
+            Debug.Assert(ReferenceEquals(this.activeScopes[^1], localScope), "ReferenceEquals(this.activeScopes[^1], localScope)");
+            this.activeScopes.RemoveAt(this.activeScopes.Count - 1);
+        }
+
+        private Symbol LookupSymbolByName(IdentifierSyntax identifierSyntax, bool isFunctionCall) => 
+            this.LookupLocalSymbolByName(identifierSyntax, isFunctionCall) ?? LookupGlobalSymbolByName(identifierSyntax, isFunctionCall);
+
+        private Symbol? LookupLocalSymbolByName(IdentifierSyntax identifierSyntax, bool isFunctionCall)
+        {
+            if (isFunctionCall)
+            {
+                // functions can't be local symbols
+                return null;
+            }
+
+            // loop iterates in reverse order
+            for (int depth = this.activeScopes.Count - 1; depth >= 0; depth--)
+            {
+                // resolve symbol against current scope
+                // this has a side-effect of binding to the innermost symbol even if there exists 
+                // a symbol with duplicate name in one of the parent scopes
+                // the duplicate detection errors will be emitted by logic elsewhere
+                var scope = this.activeScopes[depth];
+                var symbol = LookupLocalSymbolByName(scope, identifierSyntax);
+                if (symbol != null)
+                {
+                    // found a symbol - return it
+                    return symbol;
+                }
+            }
+
+            return null;
+        }
+
+        private static Symbol? LookupLocalSymbolByName(LocalScope scope, IdentifierSyntax identifierSyntax) => 
+            // bind to first symbol matching the specified identifier
+            // (errors about duplicate identifiers are emitted elsewhere)
+            // loops currently are the only source of local symbols
+            // as a result a local scope can contain between 1 to 2 local symbols
+            // linear search should be fine, but this should be revisited if the above is no longer holds true
+            scope.DeclaredSymbols.FirstOrDefault(symbol => string.Equals(identifierSyntax.IdentifierName, symbol.Name, LanguageConstants.IdentifierComparison));
+
+        private Symbol LookupGlobalSymbolByName(IdentifierSyntax identifierSyntax, bool isFunctionCall)
         {
             // attempt to find name in the imported namespaces
             if (this.namespaces.TryGetValue(identifierSyntax.IdentifierName, out var namespaceSymbol))
@@ -213,9 +283,7 @@ namespace Bicep.Core.Semantics
             }
 
             var foundSymbol = foundSymbols.FirstOrDefault();
-            return isFunctionCall ?
-                SymbolValidator.ResolveUnqualifiedFunction(allowedFlags, foundSymbol, identifierSyntax, namespaces.Values) :
-                SymbolValidator.ResolveUnqualifiedSymbol(foundSymbol, identifierSyntax, namespaces.Values, declarations.Keys);
+            return isFunctionCall ? SymbolValidator.ResolveUnqualifiedFunction(allowedFlags, foundSymbol, identifierSyntax, namespaces.Values) : SymbolValidator.ResolveUnqualifiedSymbol(foundSymbol, identifierSyntax, namespaces.Values, declarations.Keys);
         }
     }
 }

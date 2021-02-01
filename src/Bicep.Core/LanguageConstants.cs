@@ -26,6 +26,8 @@ namespace Bicep.Core
         public const string ModuleKeyword = "module";
 
         public const string IfKeyword = "if";
+        public const string ForKeyword = "for";
+        public const string InKeyword = "in";
 
         public const string TargetScopeTypeTenant = "tenant";
         public const string TargetScopeTypeManagementGroup = "managementGroup";
@@ -36,7 +38,9 @@ namespace Bicep.Core
 
         public static ImmutableSortedSet<string> ContextualKeywords = DeclarationKeywords
             .Add(TargetScopeKeyword)
-            .Add(IfKeyword);
+            .Add(IfKeyword)
+            .Add(ForKeyword)
+            .Add(InKeyword);
 
         public const string TrueKeyword = "true";
         public const string FalseKeyword = "false";
