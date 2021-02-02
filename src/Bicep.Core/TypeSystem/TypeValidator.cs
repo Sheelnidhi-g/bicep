@@ -487,6 +487,10 @@ namespace Bicep.Core.TypeSystem
                 // (the parent of a conditional can only be a resource or module declaration)
                 IfConditionSyntax ifCondition => GetMissingPropertyContext(typeManager, ifCondition),
 
+                // for loops, put it on the parent declaration identifier
+                // (the parent of a loop can only be a resource or module declaration)
+                ForSyntax @for => GetMissingPropertyContext(typeManager, @for),
+
                 // fall back to marking the entire object with the error
                 _ => (expression, "object")
             };
