@@ -33,6 +33,7 @@ namespace Bicep.Core.Semantics
                 syntaxTree.FileUri.LocalPath,
                 syntaxTree.ProgramSyntax,
                 builtInNamespacs,
+                localScopes.Values,
                 allDeclarations.OfType<ParameterSymbol>(),
                 allDeclarations.OfType<VariableSymbol>(),
                 allDeclarations.OfType<ResourceSymbol>(),
@@ -66,11 +67,11 @@ namespace Bicep.Core.Semantics
         public ImmutableArray<DeclaredSymbol>? TryGetCycle(DeclaredSymbol declaredSymbol)
             => this.cyclesBySymbol.TryGetValue(declaredSymbol, out var cycle) ? cycle : null;
 
-        private static (ImmutableArray<DeclaredSymbol>, ImmutableDictionary<SyntaxBase, LocalScope>) GetAllDeclarations(SyntaxTree syntaxTree, ISymbolContext symbolContext)
+        private static (ImmutableArray<DeclaredSymbol>, ImmutableDictionary<SyntaxBase, LocalScopeSymbol>) GetAllDeclarations(SyntaxTree syntaxTree, ISymbolContext symbolContext)
         {
             // collect declarations
             var declarations = new List<DeclaredSymbol>();
-            var localScopes = new Dictionary<SyntaxBase, LocalScope>();
+            var localScopes = new Dictionary<SyntaxBase, LocalScopeSymbol>();
             var declarationVisitor = new DeclarationVisitor(symbolContext, declarations, localScopes);
             declarationVisitor.Visit(syntaxTree.ProgramSyntax);
 
@@ -94,7 +95,7 @@ namespace Bicep.Core.Semantics
             return namespaces.ToImmutableDictionary(property => property.Name, property => property, LanguageConstants.IdentifierComparer);
         }
 
-        private static ImmutableDictionary<SyntaxBase, Symbol> GetBindings(SyntaxTree syntaxTree, IReadOnlyDictionary<string, DeclaredSymbol> uniqueDeclarations, ImmutableDictionary<string, NamespaceSymbol> builtInNamespaces, IReadOnlyDictionary<SyntaxBase, LocalScope> localScopes)
+        private static ImmutableDictionary<SyntaxBase, Symbol> GetBindings(SyntaxTree syntaxTree, IReadOnlyDictionary<string, DeclaredSymbol> uniqueDeclarations, ImmutableDictionary<string, NamespaceSymbol> builtInNamespaces, IReadOnlyDictionary<SyntaxBase, LocalScopeSymbol> localScopes)
         {
             // bind identifiers to declarations
             var bindings = new Dictionary<SyntaxBase, Symbol>();

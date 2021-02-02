@@ -9,9 +9,10 @@ namespace Bicep.Core.Semantics
     /// <summary>
     /// Represents a language scope that declares local symbols. (For example the item or index variables in loops are local symbols.)
     /// </summary>
-    public class LocalScope
+    public class LocalScopeSymbol : Symbol
     {
-        public LocalScope(SyntaxBase enclosingSyntax, IEnumerable<DeclaredSymbol> declaredSymbols)
+        public LocalScopeSymbol(string name, SyntaxBase enclosingSyntax, IEnumerable<DeclaredSymbol> declaredSymbols)
+            : base(name)
         {
             this.EnclosingSyntax = enclosingSyntax;
             this.DeclaredSymbols = declaredSymbols.ToImmutableArray();
@@ -20,5 +21,9 @@ namespace Bicep.Core.Semantics
         public SyntaxBase EnclosingSyntax { get; }
 
         public ImmutableArray<DeclaredSymbol> DeclaredSymbols { get; }
+
+        public override void Accept(SymbolVisitor visitor) => visitor.VisitLocalScopeSymbol(this);
+
+        public override SymbolKind Kind => SymbolKind.Scope;
     }
 }

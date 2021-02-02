@@ -13,6 +13,7 @@ namespace Bicep.Core.Semantics
         public FileSymbol(string name,
             ProgramSyntax syntax,
             ImmutableDictionary<string, NamespaceSymbol> importedNamespaces,
+            IEnumerable<LocalScopeSymbol> localScopes,
             IEnumerable<ParameterSymbol> parameterDeclarations,
             IEnumerable<VariableSymbol> variableDeclarations,
             IEnumerable<ResourceSymbol> resourceDeclarations,
@@ -22,6 +23,7 @@ namespace Bicep.Core.Semantics
         {
             this.Syntax = syntax;
             this.ImportedNamespaces = importedNamespaces;
+            this.LocalScopes = localScopes.ToImmutableArray();
             this.ParameterDeclarations = parameterDeclarations.ToImmutableArray();
             this.VariableDeclarations = variableDeclarations.ToImmutableArray();
             this.ResourceDeclarations = resourceDeclarations.ToImmutableArray();
@@ -42,6 +44,9 @@ namespace Bicep.Core.Semantics
 
         public ImmutableDictionary<string, NamespaceSymbol> ImportedNamespaces { get; }
 
+        // TODO: Make this hierarchical at some point.
+        public ImmutableArray<LocalScopeSymbol> LocalScopes { get; }
+
         public ImmutableArray<ParameterSymbol> ParameterDeclarations { get; }
 
         public ImmutableArray<VariableSymbol> VariableDeclarations { get; }
@@ -52,6 +57,9 @@ namespace Bicep.Core.Semantics
 
         public ImmutableArray<OutputSymbol> OutputDeclarations { get; }
         
+        /// <summary>
+        /// Returns all the top-level declaration symbols.
+        /// </summary>
         public IEnumerable<DeclaredSymbol> AllDeclarations => this.Descendants.OfType<DeclaredSymbol>();
 
         public override void Accept(SymbolVisitor visitor)

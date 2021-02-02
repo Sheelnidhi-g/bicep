@@ -14,6 +14,7 @@ namespace Bicep.Core.Semantics
         Output,
         Namespace,
         Function,
-        Local
+        Local,
+        Scope
     }
 }

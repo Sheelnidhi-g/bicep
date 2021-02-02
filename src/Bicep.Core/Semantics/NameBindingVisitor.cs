@@ -23,19 +23,19 @@ namespace Bicep.Core.Semantics
 
         private readonly ImmutableDictionary<string, NamespaceSymbol> namespaces;
 
-        private readonly IReadOnlyDictionary<SyntaxBase, LocalScope> localScopes;
+        private readonly IReadOnlyDictionary<SyntaxBase, LocalScopeSymbol> localScopes;
 
         // list of active local scopes - we're using it like a stack but with the ability
         // to peek at all the items that have been pushed already
-        private readonly IList<LocalScope> activeScopes;
+        private readonly IList<LocalScopeSymbol> activeScopes;
 
-        public NameBindingVisitor(IReadOnlyDictionary<string, DeclaredSymbol> declarations, IDictionary<SyntaxBase, Symbol> bindings, ImmutableDictionary<string, NamespaceSymbol> namespaces, IReadOnlyDictionary<SyntaxBase, LocalScope> localScopes)
+        public NameBindingVisitor(IReadOnlyDictionary<string, DeclaredSymbol> declarations, IDictionary<SyntaxBase, Symbol> bindings, ImmutableDictionary<string, NamespaceSymbol> namespaces, IReadOnlyDictionary<SyntaxBase, LocalScopeSymbol> localScopes)
         {
             this.declarations = declarations;
             this.bindings = bindings;
             this.namespaces = namespaces;
             this.localScopes = localScopes;
-            this.activeScopes = new List<LocalScope>();
+            this.activeScopes = new List<LocalScopeSymbol>();
         }
 
         public override void VisitProgramSyntax(ProgramSyntax syntax)
@@ -249,7 +249,7 @@ namespace Bicep.Core.Semantics
             return null;
         }
 
-        private static Symbol? LookupLocalSymbolByName(LocalScope scope, IdentifierSyntax identifierSyntax) => 
+        private static Symbol? LookupLocalSymbolByName(LocalScopeSymbol scope, IdentifierSyntax identifierSyntax) => 
             // bind to first symbol matching the specified identifier
             // (errors about duplicate identifiers are emitted elsewhere)
             // loops currently are the only source of local symbols

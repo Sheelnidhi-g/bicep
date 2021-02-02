@@ -12,9 +12,9 @@ namespace Bicep.Core.Semantics
 
         private readonly IList<DeclaredSymbol> declaredSymbols;
 
-        private readonly IDictionary<SyntaxBase, LocalScope> localScopes; 
+        private readonly IDictionary<SyntaxBase, LocalScopeSymbol> localScopes; 
 
-        public DeclarationVisitor(ISymbolContext context, IList<DeclaredSymbol> declaredSymbols, IDictionary<SyntaxBase, LocalScope> localScopes)
+        public DeclarationVisitor(ISymbolContext context, IList<DeclaredSymbol> declaredSymbols, IDictionary<SyntaxBase, LocalScopeSymbol> localScopes)
         {
             this.context = context;
             this.declaredSymbols = declaredSymbols;
@@ -71,7 +71,7 @@ namespace Bicep.Core.Semantics
              */
             var itemVariable = new LocalSymbol(this.context, syntax.ItemVariable.Name.IdentifierName, syntax.ItemVariable);
 
-            var scope = new LocalScope(syntax, itemVariable.AsEnumerable());
+            var scope = new LocalScopeSymbol(string.Empty, syntax, itemVariable.AsEnumerable());
             this.localScopes.Add(syntax, scope);
         }
     }
