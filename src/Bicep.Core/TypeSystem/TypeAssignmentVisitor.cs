@@ -172,6 +172,11 @@ namespace Bicep.Core.TypeSystem
                 var bodyType = typeManager.GetTypeInfo(syntax.Body);
                 CollectErrors(errors, bodyType);
 
+                if (PropagateErrorType(errors, loopItemType, arrayExpressionType, bodyType))
+                {
+                    return ErrorType.Create(errors);
+                }
+
                 if (!TypeValidator.AreTypesAssignable(arrayExpressionType, LanguageConstants.Array))
                 {
                     // the array expression isn't actually an array
