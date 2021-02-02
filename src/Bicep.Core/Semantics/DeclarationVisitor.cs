@@ -66,6 +66,7 @@ namespace Bicep.Core.Semantics
             base.VisitForSyntax(syntax);
 
             var itemVariable = new LocalSymbol(this.context, syntax.ItemVariable.Name.IdentifierName, syntax.ItemVariable);
+            
             var scope = new LocalScope(syntax, itemVariable.AsEnumerable());
             this.localScopes.Add(syntax, scope);
         }

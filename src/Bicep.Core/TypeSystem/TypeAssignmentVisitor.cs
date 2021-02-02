@@ -204,6 +204,12 @@ namespace Bicep.Core.TypeSystem
                     diagnostics.Write(DiagnosticBuilder.ForPosition(syntax.Type).ResourceTypesUnavailable(resourceType.TypeReference));
                 }
 
+                if (syntax.Value is ForSyntax)
+                {
+                    // TODO: Narrowing doesn't work
+                    return TypeValidator.NarrowTypeAndCollectDiagnostics(typeManager, syntax.Value, new TypedArrayType(declaredType, TypeSymbolValidationFlags.Default), diagnostics);
+                }
+
                 return TypeValidator.NarrowTypeAndCollectDiagnostics(typeManager, syntax.Value, declaredType, diagnostics);
             });
 
@@ -229,6 +235,12 @@ namespace Bicep.Core.TypeSystem
                     diagnostics.Write(DiagnosticBuilder.ForPosition(syntax.Path).ReferencedModuleHasErrors());
                 }
 
+                if (syntax.Value is ForSyntax)
+                {
+                    // TODO: Narrowing doesn't work
+                    return TypeValidator.NarrowTypeAndCollectDiagnostics(typeManager, syntax.Value, new TypedArrayType(declaredType, TypeSymbolValidationFlags.Default), diagnostics);
+                }
+                
                 return TypeValidator.NarrowTypeAndCollectDiagnostics(typeManager, syntax.Value, declaredType, diagnostics);
             });
 
@@ -859,6 +871,9 @@ namespace Bicep.Core.TypeSystem
 
                     case VariableSymbol variable:
                         return new DeferredTypeReference(() => VisitDeclaredSymbol(syntax, variable));
+
+                    case LocalSymbol local:
+                        return new DeferredTypeReference(() => VisitDeclaredSymbol(syntax, local));
                     
                     case NamespaceSymbol @namespace:
                         return @namespace.Type;

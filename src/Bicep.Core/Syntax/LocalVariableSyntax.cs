@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using Bicep.Core.Navigation;
 using Bicep.Core.Parsing;
 
 namespace Bicep.Core.Syntax
@@ -8,7 +9,7 @@ namespace Bicep.Core.Syntax
     /// <summary>
     /// Represents a local variable (such as the item or index variable in loops).
     /// </summary>
-    public class LocalVariableSyntax : SyntaxBase
+    public class LocalVariableSyntax : SyntaxBase, INamedDeclarationSyntax
     {
         public LocalVariableSyntax(IdentifierSyntax name)
         {

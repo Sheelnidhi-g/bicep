@@ -10,7 +10,7 @@ using Bicep.Core.TypeSystem;
 
 namespace Bicep.Core.Syntax
 {
-    public class ModuleDeclarationSyntax : StatementSyntax, INamedDeclarationSyntax
+    public class ModuleDeclarationSyntax : StatementSyntax, ITopLevelNamedDeclarationSyntax
     {
         public ModuleDeclarationSyntax(IEnumerable<SyntaxBase> leadingNodes, Token keyword, IdentifierSyntax name, SyntaxBase path, SyntaxBase assignment, SyntaxBase value)
             : base(leadingNodes)

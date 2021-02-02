@@ -150,7 +150,7 @@ namespace Bicep.Core.TypeSystem
 
                 return new ResourceType(targetResourceType.TypeReference, narrowedBody);
             }
-            
+
             if (targetType is ModuleType targetModuleType)
             {
                 var narrowedBody = NarrowTypeInternal(typeManager, expression, targetModuleType.Body.Type, diagnosticWriter, typeMismatchErrorFactory, skipConstantCheck, skipTypeErrors);
@@ -190,7 +190,7 @@ namespace Bicep.Core.TypeSystem
             }
 
             // if-condition assignability check
-            if (expression is IfConditionSyntax {Body:ObjectSyntax body})
+            if (expression is IfConditionSyntax { Body: ObjectSyntax body })
             {
                 switch (targetType)
                 {
@@ -201,7 +201,15 @@ namespace Bicep.Core.TypeSystem
                         return NarrowDiscriminatedObjectType(typeManager, body, targetDiscriminated, diagnosticWriter, skipConstantCheck);
                 }
             }
-            
+
+            // for-expression assignability check
+            if (expression is ForSyntax @for && 
+                targetType is ArrayType loopArrayType && 
+                (loopArrayType.Item is ResourceType || loopArrayType.Item is ModuleType))
+            {
+                return new TypedArrayType(NarrowTypeInternal(typeManager, @for.Body, loopArrayType.Item.Type, diagnosticWriter, typeMismatchErrorFactory, skipConstantCheck, skipTypeErrors), TypeSymbolValidationFlags.Default);
+            }
+
             // array assignability check
             if (expression is ArraySyntax arrayValue && targetType is ArrayType targetArrayType)
             {
@@ -473,7 +481,7 @@ namespace Bicep.Core.TypeSystem
                 ObjectPropertySyntax objectPropertyParent => (objectPropertyParent.Key, "object"),
 
                 // for declaration bodies, put it on the declaration identifier
-                INamedDeclarationSyntax declarationParent => (declarationParent.Name, declarationParent.Keyword.Text),
+                ITopLevelNamedDeclarationSyntax declarationParent => (declarationParent.Name, declarationParent.Keyword.Text),
                 
                 // for conditionals, put it on the parent declaration identifier
                 // (the parent of a conditional can only be a resource or module declaration)

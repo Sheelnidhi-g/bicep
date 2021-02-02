@@ -776,6 +776,11 @@ namespace Bicep.Core.Diagnostics
                 TextSpan,
                 "BCP135",
                 $"Loop expected an expression of type \"{LanguageConstants.Array}\" but the provided value is of type \"{actualType}\".");
+
+            public ErrorDiagnostic LoopsNotSupported() => new(
+                TextSpan,
+                "BCP136",
+                "Loops are not currently supported.");
         }
 
         public static DiagnosticBuilderInternal ForPosition(TextSpan span)

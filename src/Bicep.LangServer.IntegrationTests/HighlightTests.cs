@@ -67,7 +67,7 @@ namespace Bicep.LangServer.IntegrationTests
         public async Task RequestingHighlightsForWrongNodeShouldProduceNoHighlights(DataSet dataSet)
         {
             // local function
-            bool IsWrongNode(SyntaxBase node) => !(node is ISymbolReference) && !(node is INamedDeclarationSyntax) && !(node is Token);
+            bool IsWrongNode(SyntaxBase node) => !(node is ISymbolReference) && !(node is ITopLevelNamedDeclarationSyntax) && !(node is Token);
 
             var uri = DocumentUri.From($"/{dataSet.Name}");
 
@@ -116,7 +116,7 @@ namespace Bicep.LangServer.IntegrationTests
                 case ISymbolReference _:
                     return DocumentHighlightKind.Read;
 
-                case INamedDeclarationSyntax _:
+                case ITopLevelNamedDeclarationSyntax _:
                     return DocumentHighlightKind.Write;
 
                 default:

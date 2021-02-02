@@ -49,7 +49,7 @@ namespace Bicep.LangServer.IntegrationTests
                 new List<SyntaxBase>(),
                 (accumulated, node) =>
                 {
-                    if (node is ISymbolReference || node is INamedDeclarationSyntax)
+                    if (node is ISymbolReference || node is ITopLevelNamedDeclarationSyntax)
                     {
                         accumulated.Add(node);
                     }
@@ -60,7 +60,7 @@ namespace Bicep.LangServer.IntegrationTests
 
             foreach (SyntaxBase symbolReference in symbolReferences)
             {
-                var syntaxPosition = symbolReference is IDeclarationSyntax declaration
+                var syntaxPosition = symbolReference is ITopLevelDeclarationSyntax declaration
                     ? declaration.Keyword.Span.Position
                     : symbolReference.Span.Position;
 
@@ -110,7 +110,7 @@ namespace Bicep.LangServer.IntegrationTests
         public async Task HoveringOverNonHoverableElementsShouldProduceEmptyHovers(DataSet dataSet)
         {
             // local function
-            bool IsNonHoverable(SyntaxBase node) => !(node is ISymbolReference) && !(node is INamedDeclarationSyntax) && !(node is Token);
+            bool IsNonHoverable(SyntaxBase node) => !(node is ISymbolReference) && !(node is ITopLevelNamedDeclarationSyntax) && !(node is Token);
 
             var uri = DocumentUri.From($"/{dataSet.Name}");
             var client = await IntegrationTestHelper.StartServerWithTextAsync(dataSet.Bicep, uri);

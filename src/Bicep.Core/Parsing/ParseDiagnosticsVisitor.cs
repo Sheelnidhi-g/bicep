@@ -69,5 +69,13 @@ namespace Bicep.Core.Parsing
                 }
             }
         }
+
+        public override void VisitForSyntax(ForSyntax syntax)
+        {
+            base.VisitForSyntax(syntax);
+
+            // TODO: Remove when loops codegen is done.
+            this.diagnosticWriter.Write(DiagnosticBuilder.ForPosition(syntax.ForKeyword).LoopsNotSupported());
+        }
     }
 }

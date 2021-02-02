@@ -154,7 +154,7 @@ namespace Bicep.Core.IntegrationTests.Semantics
 
             var foundReferences = symbols
                 .SelectMany(s => semanticModel.FindReferences(s!))
-                .Where(refSyntax => !(refSyntax is INamedDeclarationSyntax));
+                .Where(refSyntax => !(refSyntax is ITopLevelNamedDeclarationSyntax));
 
             foundReferences.Should().BeEquivalentTo(symbolReferences);
         }

@@ -12,7 +12,7 @@ using Bicep.Core.TypeSystem;
 
 namespace Bicep.Core.Syntax
 {
-    public class ResourceDeclarationSyntax : StatementSyntax, INamedDeclarationSyntax
+    public class ResourceDeclarationSyntax : StatementSyntax, ITopLevelNamedDeclarationSyntax
     {
         public ResourceDeclarationSyntax(IEnumerable<SyntaxBase> leadingNodes, Token keyword, IdentifierSyntax name, SyntaxBase type, SyntaxBase assignment, SyntaxBase value)
             : base(leadingNodes)
