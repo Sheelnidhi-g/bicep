@@ -172,15 +172,15 @@ namespace Bicep.Core.TypeSystem
                 var bodyType = typeManager.GetTypeInfo(syntax.Body);
                 CollectErrors(errors, bodyType);
 
-                if (PropagateErrorType(errors, loopItemType, arrayExpressionType, bodyType))
-                {
-                    return ErrorType.Create(errors);
-                }
-
                 if (!TypeValidator.AreTypesAssignable(arrayExpressionType, LanguageConstants.Array))
                 {
                     // the array expression isn't actually an array
                     return ErrorType.Create(DiagnosticBuilder.ForPosition(syntax.Expression).LoopArrayExpressionTypeMismatch(arrayExpressionType));
+                }
+
+                if (PropagateErrorType(errors, loopItemType, arrayExpressionType, bodyType))
+                {
+                    return ErrorType.Create(errors);
                 }
 
                 // the return type of a loop is the array of the body type
