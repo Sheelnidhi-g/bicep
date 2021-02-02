@@ -65,8 +65,12 @@ namespace Bicep.Core.Semantics
         {
             base.VisitForSyntax(syntax);
 
+            /*
+             * We cannot add the local symbol to the list of declarations because it will
+             * break name binding at the global namespace level
+             */
             var itemVariable = new LocalSymbol(this.context, syntax.ItemVariable.Name.IdentifierName, syntax.ItemVariable);
-            
+
             var scope = new LocalScope(syntax, itemVariable.AsEnumerable());
             this.localScopes.Add(syntax, scope);
         }

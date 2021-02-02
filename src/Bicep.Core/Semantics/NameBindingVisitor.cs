@@ -49,6 +49,14 @@ namespace Bicep.Core.Semantics
             {
                 this.bindings.Add(declaredSymbol.DeclaringSyntax, declaredSymbol);
             }
+
+            // include all the locals in the symbol table as well
+            // since we only allow lookups by object and not by name,
+            // a flat symbol table should be sufficient
+            foreach (var declaredSymbol in localScopes.Values.SelectMany(scope => scope.DeclaredSymbols))
+            {
+                this.bindings.Add(declaredSymbol.DeclaringSyntax, declaredSymbol);
+            }
         }
 
         public override void VisitVariableAccessSyntax(VariableAccessSyntax syntax)
@@ -262,10 +270,10 @@ namespace Bicep.Core.Semantics
             // There might be instances where a variable declaration for example uses the same name as one of the imported
             // functions, in this case to differentiate a variable declaration vs a function access we check the namespace value,
             // the former case must have an empty namespace value whereas the latter will have a namespace value.
-            if (this.declarations.TryGetValue(identifierSyntax.IdentifierName, out var localSymbol))
+            if (this.declarations.TryGetValue(identifierSyntax.IdentifierName, out var globalSymbol))
             {
-                // we found the symbol in the local namespace
-                return localSymbol;
+                // we found the symbol in the global namespace
+                return globalSymbol;
             }
 
             // attempt to find function in all imported namespaces
