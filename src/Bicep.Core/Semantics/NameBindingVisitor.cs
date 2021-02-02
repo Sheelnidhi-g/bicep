@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using Azure.Deployments.Core.Extensions;
 using Bicep.Core.Diagnostics;
 using Bicep.Core.Extensions;
 using Bicep.Core.Syntax;
@@ -29,12 +30,12 @@ namespace Bicep.Core.Semantics
         // to peek at all the items that have been pushed already
         private readonly IList<LocalScopeSymbol> activeScopes;
 
-        public NameBindingVisitor(IReadOnlyDictionary<string, DeclaredSymbol> declarations, IDictionary<SyntaxBase, Symbol> bindings, ImmutableDictionary<string, NamespaceSymbol> namespaces, IReadOnlyDictionary<SyntaxBase, LocalScopeSymbol> localScopes)
+        public NameBindingVisitor(IReadOnlyDictionary<string, DeclaredSymbol> declarations, IDictionary<SyntaxBase, Symbol> bindings, ImmutableDictionary<string, NamespaceSymbol> namespaces, ImmutableArray<LocalScopeSymbol> outermostScopes)
         {
             this.declarations = declarations;
             this.bindings = bindings;
             this.namespaces = namespaces;
-            this.localScopes = localScopes;
+            this.localScopes = ScopeCollectorVisitor.Build(outermostScopes);
             this.activeScopes = new List<LocalScopeSymbol>();
         }
 
@@ -290,8 +291,30 @@ namespace Bicep.Core.Semantics
                 return new ErrorSymbol(DiagnosticBuilder.ForPosition(identifierSyntax).AmbiguousSymbolReference(identifierSyntax.IdentifierName, this.namespaces.Keys));
             }
 
-            var foundSymbol = foundSymbols.FirstOrDefault();
+            var foundSymbol = Enumerable.FirstOrDefault(foundSymbols);
             return isFunctionCall ? SymbolValidator.ResolveUnqualifiedFunction(allowedFlags, foundSymbol, identifierSyntax, namespaces.Values) : SymbolValidator.ResolveUnqualifiedSymbol(foundSymbol, identifierSyntax, namespaces.Values, declarations.Keys);
+        }
+        
+        private class ScopeCollectorVisitor: SymbolVisitor
+        {
+            private IDictionary<SyntaxBase, LocalScopeSymbol> ScopeMap { get; } = new Dictionary<SyntaxBase, LocalScopeSymbol>();
+
+            public override void VisitLocalScopeSymbol(LocalScopeSymbol symbol)
+            {
+                this.ScopeMap.Add(symbol.EnclosingSyntax, symbol);
+                base.VisitLocalScopeSymbol(symbol);
+            }
+
+            public static IReadOnlyDictionary<SyntaxBase, LocalScopeSymbol> Build(ImmutableArray<LocalScopeSymbol> outermostScopes)
+            {
+                var visitor = new ScopeCollectorVisitor();
+                foreach (LocalScopeSymbol outermostScope in outermostScopes)
+                {
+                    visitor.Visit(outermostScope);
+                }
+
+                return visitor.ScopeMap.AsReadOnly();
+            }
         }
     }
 }

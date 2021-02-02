@@ -13,7 +13,7 @@ namespace Bicep.Core.Semantics
         public FileSymbol(string name,
             ProgramSyntax syntax,
             ImmutableDictionary<string, NamespaceSymbol> importedNamespaces,
-            IEnumerable<LocalScopeSymbol> localScopes,
+            IEnumerable<LocalScopeSymbol> outermostScopes,
             IEnumerable<ParameterSymbol> parameterDeclarations,
             IEnumerable<VariableSymbol> variableDeclarations,
             IEnumerable<ResourceSymbol> resourceDeclarations,
@@ -23,7 +23,7 @@ namespace Bicep.Core.Semantics
         {
             this.Syntax = syntax;
             this.ImportedNamespaces = importedNamespaces;
-            this.LocalScopes = localScopes.ToImmutableArray();
+            this.LocalScopes = outermostScopes.ToImmutableArray();
             this.ParameterDeclarations = parameterDeclarations.ToImmutableArray();
             this.VariableDeclarations = variableDeclarations.ToImmutableArray();
             this.ResourceDeclarations = resourceDeclarations.ToImmutableArray();

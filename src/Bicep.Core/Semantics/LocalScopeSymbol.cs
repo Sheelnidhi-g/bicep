@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using Bicep.Core.Syntax;
 
 namespace Bicep.Core.Semantics
@@ -11,19 +12,26 @@ namespace Bicep.Core.Semantics
     /// </summary>
     public class LocalScopeSymbol : Symbol
     {
-        public LocalScopeSymbol(string name, SyntaxBase enclosingSyntax, IEnumerable<DeclaredSymbol> declaredSymbols)
+        public LocalScopeSymbol(string name, SyntaxBase enclosingSyntax, IEnumerable<DeclaredSymbol> declaredSymbols, IEnumerable<LocalScopeSymbol> childScopes)
             : base(name)
         {
             this.EnclosingSyntax = enclosingSyntax;
             this.DeclaredSymbols = declaredSymbols.ToImmutableArray();
+            this.ChildScopes = childScopes.ToImmutableArray();
         }
 
         public SyntaxBase EnclosingSyntax { get; }
 
         public ImmutableArray<DeclaredSymbol> DeclaredSymbols { get; }
 
+        public ImmutableArray<LocalScopeSymbol> ChildScopes { get; }
+
         public override void Accept(SymbolVisitor visitor) => visitor.VisitLocalScopeSymbol(this);
 
         public override SymbolKind Kind => SymbolKind.Scope;
+
+        public override IEnumerable<Symbol> Descendants => this.ChildScopes;
+
+        public LocalScopeSymbol AppendChild(LocalScopeSymbol newChild) => new(this.Name, this.EnclosingSyntax, this.DeclaredSymbols, this.ChildScopes.Append(newChild));
     }
 }
