@@ -109,7 +109,8 @@ namespace Bicep.Core.IntegrationTests.Semantics
                         s is ModuleSymbol ||
                         s is OutputSymbol ||
                         s is FunctionSymbol ||
-                        s is NamespaceSymbol);
+                        s is NamespaceSymbol ||
+                        s is LocalSymbol);
                 }
                 else
                 {
@@ -122,7 +123,8 @@ namespace Bicep.Core.IntegrationTests.Semantics
                         s is ModuleSymbol ||
                         s is OutputSymbol ||
                         s is FunctionSymbol ||
-                        s is NamespaceSymbol);
+                        s is NamespaceSymbol ||
+                        s is LocalSymbol);
                 }
 
                 var foundRefs = model.FindReferences(symbol!);
@@ -154,7 +156,7 @@ namespace Bicep.Core.IntegrationTests.Semantics
 
             var foundReferences = symbols
                 .SelectMany(s => semanticModel.FindReferences(s!))
-                .Where(refSyntax => !(refSyntax is ITopLevelNamedDeclarationSyntax));
+                .Where(refSyntax => !(refSyntax is INamedDeclarationSyntax));
 
             foundReferences.Should().BeEquivalentTo(symbolReferences);
         }

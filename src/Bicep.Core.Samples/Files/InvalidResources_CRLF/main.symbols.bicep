@@ -702,29 +702,37 @@ resource expectedForKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [f
 //@[9:28) Resource expectedForKeyword2. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 81
 
 resource expectedLoopVar 'Microsoft.Storage/storageAccounts@2019-06-01' = [for]
-//@[9:24) Resource expectedLoopVar. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 79
+//@[78:78) Local <missing>. Type: any. Declaration start char: 78, length: 0
+//@[9:24) Resource expectedLoopVar. Type: Microsoft.Storage/storageAccounts@2019-06-01[]. Declaration start char: 0, length: 79
 
 resource expectedInKeyword 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x]
-//@[9:26) Resource expectedInKeyword. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 83
+//@[81:82) Local x. Type: any. Declaration start char: 81, length: 1
+//@[9:26) Resource expectedInKeyword. Type: Microsoft.Storage/storageAccounts@2019-06-01[]. Declaration start char: 0, length: 83
 
 resource expectedInKeyword2 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x b]
-//@[9:27) Resource expectedInKeyword2. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 86
+//@[82:83) Local x. Type: any. Declaration start char: 82, length: 1
+//@[9:27) Resource expectedInKeyword2. Type: Microsoft.Storage/storageAccounts@2019-06-01[]. Declaration start char: 0, length: 86
 
 resource expectedArrayExpression 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in]
-//@[9:32) Resource expectedArrayExpression. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 92
+//@[87:88) Local x. Type: any. Declaration start char: 87, length: 1
+//@[9:32) Resource expectedArrayExpression. Type: Microsoft.Storage/storageAccounts@2019-06-01[]. Declaration start char: 0, length: 92
 
 resource expectedColon 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y]
-//@[9:22) Resource expectedColon. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 84
+//@[77:78) Local x. Type: any. Declaration start char: 77, length: 1
+//@[9:22) Resource expectedColon. Type: Microsoft.Storage/storageAccounts@2019-06-01[]. Declaration start char: 0, length: 84
 
 resource expectedLoopBody 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:]
-//@[9:25) Resource expectedLoopBody. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 88
+//@[80:81) Local x. Type: any. Declaration start char: 80, length: 1
+//@[9:25) Resource expectedLoopBody. Type: Microsoft.Storage/storageAccounts@2019-06-01[]. Declaration start char: 0, length: 88
 
 // loop semantic analysis cases
 resource wrongLoopBodyType 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:4]
-//@[9:26) Resource wrongLoopBodyType. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 90
+//@[81:82) Local x. Type: any. Declaration start char: 81, length: 1
+//@[9:26) Resource wrongLoopBodyType. Type: Microsoft.Storage/storageAccounts@2019-06-01[]. Declaration start char: 0, length: 90
 
 resource missingLoopBodyProperties 'Microsoft.Storage/storageAccounts@2019-06-01' = [for x in y:{
-//@[9:34) Resource missingLoopBodyProperties. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 103
+//@[89:90) Local x. Type: any. Declaration start char: 89, length: 1
+//@[9:34) Resource missingLoopBodyProperties. Type: Microsoft.Storage/storageAccounts@2019-06-01[]. Declaration start char: 0, length: 103
 
 }]
 
@@ -741,7 +749,8 @@ var storageAccounts = [
   }
 ]
 resource storageResources 'Microsoft.Storage/storageAccounts@2019-06-01' = [for account in storageAccounts: {
-//@[9:25) Resource storageResources. Type: Microsoft.Storage/storageAccounts@2019-06-01. Declaration start char: 0, length: 227
+//@[80:87) Local account. Type: any. Declaration start char: 80, length: 7
+//@[9:25) Resource storageResources. Type: Microsoft.Storage/storageAccounts@2019-06-01[]. Declaration start char: 0, length: 227
   name: account.name
   location: account.location
   sku: {

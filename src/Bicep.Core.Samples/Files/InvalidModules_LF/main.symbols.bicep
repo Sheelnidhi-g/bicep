@@ -360,29 +360,37 @@ module expectedForKeyword2 'modulea.bicep' = [f]
 //@[7:26) Module expectedForKeyword2. Type: module. Declaration start char: 0, length: 48
 
 module expectedLoopVar 'modulea.bicep' = [for]
-//@[7:22) Module expectedLoopVar. Type: module. Declaration start char: 0, length: 46
+//@[45:45) Local <missing>. Type: any. Declaration start char: 45, length: 0
+//@[7:22) Module expectedLoopVar. Type: module[]. Declaration start char: 0, length: 46
 
 module expectedInKeyword 'modulea.bicep' = [for x]
-//@[7:24) Module expectedInKeyword. Type: module. Declaration start char: 0, length: 50
+//@[48:49) Local x. Type: any. Declaration start char: 48, length: 1
+//@[7:24) Module expectedInKeyword. Type: module[]. Declaration start char: 0, length: 50
 
 module expectedInKeyword2 'modulea.bicep' = [for x b]
-//@[7:25) Module expectedInKeyword2. Type: module. Declaration start char: 0, length: 53
+//@[49:50) Local x. Type: any. Declaration start char: 49, length: 1
+//@[7:25) Module expectedInKeyword2. Type: module[]. Declaration start char: 0, length: 53
 
 module expectedArrayExpression 'modulea.bicep' = [for x in]
-//@[7:30) Module expectedArrayExpression. Type: module. Declaration start char: 0, length: 59
+//@[54:55) Local x. Type: any. Declaration start char: 54, length: 1
+//@[7:30) Module expectedArrayExpression. Type: module[]. Declaration start char: 0, length: 59
 
 module expectedColon 'modulea.bicep' = [for x in y]
-//@[7:20) Module expectedColon. Type: module. Declaration start char: 0, length: 51
+//@[44:45) Local x. Type: any. Declaration start char: 44, length: 1
+//@[7:20) Module expectedColon. Type: module[]. Declaration start char: 0, length: 51
 
 module expectedLoopBody 'modulea.bicep' = [for x in y:]
-//@[7:23) Module expectedLoopBody. Type: module. Declaration start char: 0, length: 55
+//@[47:48) Local x. Type: any. Declaration start char: 47, length: 1
+//@[7:23) Module expectedLoopBody. Type: module[]. Declaration start char: 0, length: 55
 
 // loop semantic analysis cases
 module wrongLoopBodyType 'modulea.bicep' = [for x in y:4]
-//@[7:24) Module wrongLoopBodyType. Type: module. Declaration start char: 0, length: 57
+//@[48:49) Local x. Type: any. Declaration start char: 48, length: 1
+//@[7:24) Module wrongLoopBodyType. Type: module[]. Declaration start char: 0, length: 57
 
 module missingLoopBodyProperties 'modulea.bicep' = [for x in y:{
-//@[7:32) Module missingLoopBodyProperties. Type: module. Declaration start char: 0, length: 68
+//@[56:57) Local x. Type: any. Declaration start char: 56, length: 1
+//@[7:32) Module missingLoopBodyProperties. Type: module[]. Declaration start char: 0, length: 68
 
 }]
 
@@ -399,7 +407,8 @@ var myModules = [
   }
 ]
 module storageResources 'modulea.bicep' = [for module in myModules: {
-//@[7:23) Module storageResources. Type: module. Declaration start char: 0, length: 182
+//@[47:53) Local module. Type: any. Declaration start char: 47, length: 6
+//@[7:23) Module storageResources. Type: module[]. Declaration start char: 0, length: 182
   name: module.name
   params: {
     arrayParam: []
