@@ -11,8 +11,6 @@ using Bicep.Core.Samples;
 using Bicep.Core.Semantics;
 using Bicep.Core.Syntax;
 using Bicep.Core.Syntax.Visitors;
-using Bicep.Core.Text;
-using Bicep.Core.UnitTests.Utils;
 using Bicep.LangServer.IntegrationTests.Extensions;
 using Bicep.LanguageServer.Utils;
 using FluentAssertions;
@@ -44,7 +42,7 @@ namespace Bicep.LangServer.IntegrationTests
 
             // filter out binding failures and locals with invalid identifiers
             // (locals are special because their full span is the same as the identifier span,
-            // which makes it impossible to hover on locals with invalid identifiers)
+            // which makes it impossible to highlight locals with invalid identifiers)
             var filteredSymbolTable = symbolTable.Where(pair => pair.Value.Kind != SymbolKind.Error && (pair.Value is not LocalSymbol local || local.NameSyntax.IsValid));
 
             var symbolToSyntaxLookup = filteredSymbolTable.ToLookup(pair => pair.Value, pair => pair.Key);

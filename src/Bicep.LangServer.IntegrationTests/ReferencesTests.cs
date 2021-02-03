@@ -42,11 +42,12 @@ namespace Bicep.LangServer.IntegrationTests
             var symbolTable = compilation.ReconstructSymbolTable();
             var lineStarts = compilation.SyntaxTreeGrouping.EntryPoint.LineStarts;
 
-            var symbolToSyntaxLookup = symbolTable
-                .Where(pair => pair.Value.Kind != SymbolKind.Error)
-                .ToLookup(pair => pair.Value, pair => pair.Key);
+            // filter out bind failures and locals with invalid identifiers
+            // (locals are special because their span is equal to their identifier span)
+            var filteredSymbolTable = symbolTable.Where(pair => pair.Value.Kind != SymbolKind.Error && (pair.Value is not LocalSymbol local || local.NameSyntax.IsValid));
+            var symbolToSyntaxLookup = filteredSymbolTable.ToLookup(pair => pair.Value, pair => pair.Key);
 
-            foreach (var (syntax, symbol) in symbolTable.Where(s => s.Value.Kind != SymbolKind.Error))
+            foreach (var (syntax, symbol) in filteredSymbolTable)
             {
                 var locations = await client.RequestReferences(new ReferenceParams
                 {
@@ -81,11 +82,12 @@ namespace Bicep.LangServer.IntegrationTests
             var symbolTable = compilation.ReconstructSymbolTable();
             var lineStarts = compilation.SyntaxTreeGrouping.EntryPoint.LineStarts;
 
-            var symbolToSyntaxLookup = symbolTable
-                .Where(pair => pair.Value.Kind != SymbolKind.Error)
-                .ToLookup(pair => pair.Value, pair => pair.Key);
+            // filter out bind failures and locals with invalid identifiers
+            // (locals are special because their span is equal to their identifier span)
+            var filteredSymbolTable = symbolTable.Where(pair => pair.Value.Kind != SymbolKind.Error && (pair.Value is not LocalSymbol local || local.NameSyntax.IsValid));
+            var symbolToSyntaxLookup = filteredSymbolTable.ToLookup(pair => pair.Value, pair => pair.Key);
 
-            foreach (var (syntax, symbol) in symbolTable.Where(s => s.Value.Kind != SymbolKind.Error))
+            foreach (var (syntax, symbol) in filteredSymbolTable)
             {
                 var locations = await client.RequestReferences(new ReferenceParams
                 {
@@ -102,7 +104,7 @@ namespace Bicep.LangServer.IntegrationTests
 
                 // exclude declarations when calculating expected ranges
                 var expectedRanges = symbolToSyntaxLookup[symbol]
-                    .Where(node => !(node is ITopLevelNamedDeclarationSyntax))
+                    .Where(node => !(node is INamedDeclarationSyntax))
                     .Select(node => PositionHelper.GetNameRange(lineStarts, node));
 
                 // ranges should match what we got from our own symbol table
