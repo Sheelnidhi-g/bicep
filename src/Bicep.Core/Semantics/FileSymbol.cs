@@ -93,7 +93,7 @@ namespace Bicep.Core.Semantics
             }
         }
 
-        public IEnumerable<DeclaredSymbol> GetDeclarationsByName(string name) => this.AllDeclarations.Where(symbol => string.Equals(symbol.Name, name, LanguageConstants.IdentifierComparison)).ToList();
+        public IEnumerable<DeclaredSymbol> GetDeclarationsByName(string name) => this.AllDeclarations.Where(symbol => symbol.NameSyntax.IsValid && string.Equals(symbol.Name, name, LanguageConstants.IdentifierComparison)).ToList();
 
         private sealed class DuplicateIdentifierDiagnosticCollectorVisitor : SymbolVisitor
         {
@@ -121,13 +121,14 @@ namespace Bicep.Core.Semantics
 
             protected override void VisitInternal(Symbol node)
             {
-                if (node is DeclaredSymbol declaredSymbol)
+                if (node is DeclaredSymbol declaredSymbol && declaredSymbol.NameSyntax.IsValid)
                 {
                     // TODO: There's an 
                     // collect symbols with the same name from current and parent scopes
                     var symbolsWithMatchingName = FindSymbolsByName(declaredSymbol.Name);
 
                     // we're visiting the symbol now, so we should have at least 1
+                    // (0 would be possible if we didn't assert on NameSyntax being valid at the top)
                     Debug.Assert(symbolsWithMatchingName.Count > 0, "symbolsWithMatchingName.Count > 0");
 
                     // more than 1 in currently active scopes indicates a user error
