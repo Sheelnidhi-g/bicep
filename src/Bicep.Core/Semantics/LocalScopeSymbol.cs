@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Bicep.Core.Diagnostics;
 using Bicep.Core.Syntax;
 
 namespace Bicep.Core.Semantics
@@ -35,5 +36,11 @@ namespace Bicep.Core.Semantics
         public LocalScopeSymbol AppendChild(LocalScopeSymbol newChild) => new(this.Name, this.EnclosingSyntax, this.DeclaredSymbols, this.ChildScopes.Append(newChild));
         
         public IEnumerable<DeclaredSymbol> GetDeclarationsByName(string name) => this.DeclaredSymbols.Where(symbol => string.Equals(symbol.Name, name, LanguageConstants.IdentifierComparison)).ToList();
+
+        public override IEnumerable<ErrorDiagnostic> GetDiagnostics()
+        {
+            // TODO: Remove when loops codegen is done.
+            yield return DiagnosticBuilder.ForPosition(((ForSyntax) this.EnclosingSyntax).ForKeyword).LoopsNotSupported();
+        }
     }
 }
