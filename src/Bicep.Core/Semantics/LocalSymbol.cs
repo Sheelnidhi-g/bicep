@@ -3,6 +3,7 @@
 
 using System;
 using Bicep.Core.Syntax;
+using Bicep.Core.TypeSystem;
 
 namespace Bicep.Core.Semantics
 {

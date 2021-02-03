@@ -190,6 +190,10 @@ namespace Bicep.LangServer.IntegrationTests
                     hover.Contents.MarkupContent.Value.Should().Contain($"function {function.Name}(");
                     break;
 
+                case LocalSymbol local:
+                    hover.Contents.MarkupContent.Value.Should().Contain($"{local.Name}: {local.Type}");
+                    break;
+
                 default:
                     throw new AssertFailedException($"Unexpected symbol type '{symbol.GetType().Name}'");
             }
