@@ -42,11 +42,14 @@ namespace Bicep.LangServer.IntegrationTests
             var symbolTable = compilation.ReconstructSymbolTable();
             var lineStarts = compilation.SyntaxTreeGrouping.EntryPoint.LineStarts;
 
-            var symbolToSyntaxLookup = symbolTable
-                .Where(pair => pair.Value.Kind != SymbolKind.Error)
-                .ToLookup(pair => pair.Value, pair => pair.Key);
+            // filter out binding failures and locals with invalid identifiers
+            // (locals are special because their full span is the same as the identifier span,
+            // which makes it impossible to hover on locals with invalid identifiers)
+            var filteredSymbolTable = symbolTable.Where(pair => pair.Value.Kind != SymbolKind.Error && (pair.Value is not LocalSymbol local || local.NameSyntax.IsValid));
 
-            foreach (var (syntax, symbol) in symbolTable.Where(s => s.Value.Kind != SymbolKind.Error))
+            var symbolToSyntaxLookup = filteredSymbolTable.ToLookup(pair => pair.Value, pair => pair.Key);
+
+            foreach (var (syntax, symbol) in filteredSymbolTable)
             {
                 var highlights = await client.RequestDocumentHighlight(new DocumentHighlightParams
                 {
@@ -116,7 +119,7 @@ namespace Bicep.LangServer.IntegrationTests
                 case ISymbolReference _:
                     return DocumentHighlightKind.Read;
 
-                case ITopLevelNamedDeclarationSyntax _:
+                case INamedDeclarationSyntax _:
                     return DocumentHighlightKind.Write;
 
                 default:
