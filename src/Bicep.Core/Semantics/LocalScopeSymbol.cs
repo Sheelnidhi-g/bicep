@@ -10,7 +10,7 @@ namespace Bicep.Core.Semantics
     /// <summary>
     /// Represents a language scope that declares local symbols. (For example the item or index variables in loops are local symbols.)
     /// </summary>
-    public class LocalScopeSymbol : Symbol
+    public class LocalScopeSymbol : Symbol, ILanguageScope
     {
         public LocalScopeSymbol(string name, SyntaxBase enclosingSyntax, IEnumerable<DeclaredSymbol> declaredSymbols, IEnumerable<LocalScopeSymbol> childScopes)
             : base(name)
@@ -30,8 +30,10 @@ namespace Bicep.Core.Semantics
 
         public override SymbolKind Kind => SymbolKind.Scope;
 
-        public override IEnumerable<Symbol> Descendants => this.ChildScopes;
+        public override IEnumerable<Symbol> Descendants => this.ChildScopes.Concat<Symbol>(this.DeclaredSymbols);
 
         public LocalScopeSymbol AppendChild(LocalScopeSymbol newChild) => new(this.Name, this.EnclosingSyntax, this.DeclaredSymbols, this.ChildScopes.Append(newChild));
+        
+        public IEnumerable<DeclaredSymbol> GetDeclarationsByName(string name) => this.DeclaredSymbols.Where(symbol => string.Equals(symbol.Name, name, LanguageConstants.IdentifierComparison)).ToList();
     }
 }
